@@ -1,12 +1,8 @@
-# Firebase Studio
+# **App Name**: ShuttleUp
 
-This is a NextJS starter in Firebase Studio.
+## Core Features:
 
-To get started, take a look at src/app/page.tsx.
-
-## Firebase Keys
-
-To connect to your own firebase project you will need to update the firebase config located in `src/lib/firebase/config.ts` with the keys for your own project.
-
-You can get these keys by going to your Firebase console and then under project settings. Then click on the `General` tab and scroll down to `Your apps` you will find the config for web.
+- User Profiles: User signup and profile creation with team affiliation.
+- Match Display: Display upcoming match schedules and team standings.
+- Umpire Score Input: Umpire interface for live scoring and result submission.
 
