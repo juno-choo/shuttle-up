@@ -42,6 +42,7 @@ next-env.d.ts
 # Environment variables (ADDED)
 # Ignore all .env files, but allow example files if needed
 .env*
+.env.local*
 !.env.example
 !.env.example.*
 

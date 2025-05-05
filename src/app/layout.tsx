@@ -1,16 +1,17 @@
-
-import type {Metadata} from 'next';
-import {GeistSans} from 'geist/font/sans';
-// Removed GeistMono as it's not found
-import './globals.css';
-import {cn} from '@/lib/utils';
-// Removed MainLayout import
+// src/app/layout.tsx
+import type { Metadata } from "next";
+import { GeistSans } from "geist/font/sans";
+import "./globals.css";
+import { cn } from "@/lib/utils";
 import { Toaster } from "@/components/ui/toaster";
-import { AuthProvider } from '@/context/auth-context'; // Import AuthProvider
+// Import the new wrapper component
+import { ClientProviders } from "@/components/providers/client-providers";
+// REMOVE the direct import of AuthProvider:
+// import { AuthProvider } from '@/context/auth-context';
 
 export const metadata: Metadata = {
-  title: 'ShuttleUp',
-  description: 'Your badminton league manager',
+  title: "ShuttleUp",
+  description: "Your badminton league manager",
 };
 
 export default function RootLayout({
@@ -18,18 +19,17 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  console.log("--- Rendering RootLayout (using ClientProviders) ---");
   return (
     <html lang="en" suppressHydrationWarning>
       <body
         className={cn(
-          'min-h-screen bg-background font-sans antialiased',
+          "min-h-screen bg-background font-sans antialiased",
           GeistSans.variable
-          // GeistMono.variable removed
         )}
       >
-        <AuthProvider> {/* Wrap children with AuthProvider */}
-          {children}
-        </AuthProvider>
+        {/* Use the ClientProviders component here */}
+        <ClientProviders>{children}</ClientProviders>
         <Toaster />
       </body>
     </html>

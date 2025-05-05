@@ -1,40 +1,64 @@
 // src/app/(authenticated)/layout.tsx
-'use client';
+"use client";
 
-import type { ReactNode } from 'react';
-import { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { MainLayout } from '@/components/layout/main-layout'; // Ensure this path is correct
-import { useAuth } from '@/context/auth-context';
+import type { ReactNode } from "react";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { MainLayout } from "@/components/layout/main-layout"; // Ensure this path is correct
+import { useAuth } from "@/context/auth-context";
 
 type AuthenticatedLayoutProps = {
   children: ReactNode;
 };
 
-export default function AuthenticatedLayout({ children }: AuthenticatedLayoutProps) {
+export default function AuthenticatedLayout({
+  children,
+}: AuthenticatedLayoutProps) {
   const { user, loading } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
-    // If loading is finished and there's no user, redirect to login.
-    // The middleware handles the primary redirect, but this provides
-    // an additional client-side check, especially useful after client-side logout.
+    // This effect redirects if not loading and no user is found.
+    // This handles direct access attempts or post-logout scenarios.
     if (!loading && !user) {
-      console.log('AuthenticatedLayout: Not loading and no user, redirecting to /login'); // Client-side log
-      // document.cookie = "firebaseAuth=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT"; // REMOVED THIS LINE
-      router.push('/login');
+      console.log(
+        "AuthenticatedLayout Effect: Not loading and no user, redirecting to /login"
+      );
+      router.push("/login");
     }
-    // REMOVED the else if block that set firebaseAuth=true cookie
+    // Dependencies are correct: run when user, loading, or router changes.
   }, [user, loading, router]);
 
-  // Prevent rendering children until authentication is confirmed and user exists.
-  // This prevents flashing protected content to logged-out users.
-  if (loading || !user) {
-    // You can return a proper loading skeleton or component here
-    return <div className="flex items-center justify-center min-h-screen">Authenticating.</div>;
+  // --- Revised Render Logic ---
+
+  // 1. While authentication is loading, show a clear loading state.
+  if (loading) {
+    console.log("AuthenticatedLayout Render: Loading authentication...");
+    // Return your loading component or a simple div
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        Authenticating...
+      </div>
+    );
   }
 
-  // If authenticated and loaded, render the main layout with the children pages
-  console.log('AuthenticatedLayout: Rendering children for authenticated user.'); // Client-side log
+  // 2. If loading is complete BUT there is no user:
+  //    The useEffect above will trigger the redirect. We should render nothing
+  //    or the loader briefly while that happens to prevent flashing content.
+  if (!user) {
+    console.log(
+      "AuthenticatedLayout Render: User not found after load, waiting for redirect effect."
+    );
+    // Return null (cleanest) or your loader component again.
+    // Avoids trying to render MainLayout when user is null.
+    return null;
+    // Or: return <div className="flex items-center justify-center min-h-screen">Authenticating...</div>;
+  }
+
+  // 3. If loading is complete AND we have a user:
+  //    Render the main application layout and the actual page content.
+  console.log(
+    "AuthenticatedLayout Render: Rendering children for authenticated user."
+  );
   return <MainLayout>{children}</MainLayout>;
 }

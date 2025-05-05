@@ -3,17 +3,21 @@ import * as admin from 'firebase-admin';
 
 // Check if the GOOGLE_APPLICATION_CREDENTIALS environment variable is set
 if (!process.env.GOOGLE_APPLICATION_CREDENTIALS) {
-   console.warn('Firebase Admin SDK Warning: GOOGLE_APPLICATION_CREDENTIALS env var not set. SDK will try to use default credentials if available (e.g., on GCP), otherwise initialization might fail.');
-   // Depending on your setup, you might want to throw an error here if the file path is required locally
+    console.warn('Firebase Admin SDK Warning: GOOGLE_APPLICATION_CREDENTIALS env var not set. SDK will try to use default credentials if available (e.g., on GCP), otherwise initialization might fail.');
+    // Depending on your setup, you might want to throw an error here if the file path is required locally
 }
 
 // Initialize the Firebase Admin SDK only if it hasn't been initialized yet
 if (!admin.apps.length) {
   try {
+
+    console.log('[Next.js Server Env] GOOGLE_APPLICATION_CREDENTIALS:', process.env.GOOGLE_APPLICATION_CREDENTIALS);
+
+
     console.log('Attempting admin.initializeApp (using GOOGLE_APPLICATION_CREDENTIALS if set)...');
     // When GOOGLE_APPLICATION_CREDENTIALS env var is set,
     // initializeApp() automatically uses it. No need to pass 'credential'.
-    admin.initializeApp();
+    admin.initializeApp(); // This is the line that was failing
     console.log('Firebase Admin SDK Initialized Successfully.');
   } catch (error) {
     // Log any errors during initialization
