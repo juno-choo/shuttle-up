@@ -1,23 +1,34 @@
-// src/lib/firebase/admin.ts
-
 import * as admin from 'firebase-admin';
-import fs from 'fs';
-import path from 'path';
 
-if (!admin.apps.length) {
-  try {
-    const serviceAccountPath = path.resolve(process.cwd(), 'firebase-service-account.json');
-    const serviceAccountBuffer = fs.readFileSync(serviceAccountPath, 'utf-8');
-    const serviceAccount = JSON.parse(serviceAccountBuffer);
+console.log('[admin.ts] Starting Firebase Admin initialization...');
+let adminAuthInstance = null;
 
-    admin.initializeApp({
-      credential: admin.credential.cert(serviceAccount),
-    });
+try {
+  const projectId = process.env.FIREBASE_PROJECT_ID;
+  const clientEmail = process.env.FIREBASE_CLIENT_EMAIL;
+  const privateKey = process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n');
 
-    console.log('✅ Firebase Admin initialized using service account file.');
-  } catch (err) {
-    console.error('❌ Failed to initialize Firebase Admin SDK from file:', err);
+  console.log('[admin.ts] ENV CHECK:', {
+    projectId,
+    clientEmail,
+    hasPrivateKey: !!privateKey,
+    previewPrivateKey: privateKey?.slice(0, 40), // DO NOT log full key
+  });
+
+  if (!projectId || !clientEmail || !privateKey) {
+    throw new Error('Missing required Firebase Admin env vars.');
   }
+
+  if (!admin.apps.length) {
+    admin.initializeApp({
+      credential: admin.credential.cert({ projectId, clientEmail, privateKey }),
+    });
+    console.log('[admin.ts] ✅ Firebase Admin initialized');
+  }
+
+  adminAuthInstance = admin.auth();
+} catch (err) {
+  console.error('[admin.ts] ❌ Firebase Admin SDK init failed:', err);
 }
 
-export const adminAuth = admin.apps.length ? admin.auth() : null;
+export const adminAuth = adminAuthInstance;
