@@ -1,42 +1,52 @@
 // src/lib/firebase/admin.ts
 import * as admin from 'firebase-admin';
 
-// Check if the GOOGLE_APPLICATION_CREDENTIALS environment variable is set
-if (!process.env.GOOGLE_APPLICATION_CREDENTIALS) {
-    console.warn('Firebase Admin SDK Warning: GOOGLE_APPLICATION_CREDENTIALS env var not set. SDK will try to use default credentials if available (e.g., on GCP), otherwise initialization might fail.');
-    // Depending on your setup, you might want to throw an error here if the file path is required locally
+// Retrieve the private key from environment variables.
+// Vercel handles multi-line environment variables, so the \n should be preserved correctly.
+// If not, you might need .replace(/\\n/g, '\n') if Vercel somehow escapes it.
+// But usually, direct copy-paste of the key from JSON into Vercel UI works.
+const privateKey = process.env.FIREBASE_PRIVATE_KEY;
+
+// Check if the necessary environment variables are set
+if (!process.env.FIREBASE_PROJECT_ID) {
+  console.error('Firebase Admin SDK Config Error: FIREBASE_PROJECT_ID is not set.');
+}
+if (!process.env.FIREBASE_CLIENT_EMAIL) {
+  console.error('Firebase Admin SDK Config Error: FIREBASE_CLIENT_EMAIL is not set.');
+}
+if (!privateKey) {
+  console.error('Firebase Admin SDK Config Error: FIREBASE_PRIVATE_KEY is not set or invalid.');
 }
 
 // Initialize the Firebase Admin SDK only if it hasn't been initialized yet
 if (!admin.apps.length) {
   try {
-
-    console.log('[Next.js Server Env] GOOGLE_APPLICATION_CREDENTIALS:', process.env.GOOGLE_APPLICATION_CREDENTIALS);
-
-
-    console.log('Attempting admin.initializeApp (using GOOGLE_APPLICATION_CREDENTIALS if set)...');
-    // When GOOGLE_APPLICATION_CREDENTIALS env var is set,
-    // initializeApp() automatically uses it. No need to pass 'credential'.
-    admin.initializeApp(); // This is the line that was failing
-    console.log('Firebase Admin SDK Initialized Successfully.');
+    // Only attempt to initialize if all required env vars for this method seem present
+    if (process.env.FIREBASE_PROJECT_ID && process.env.FIREBASE_CLIENT_EMAIL && privateKey) {
+      admin.initializeApp({
+        credential: admin.credential.cert({
+          projectId: process.env.FIREBASE_PROJECT_ID,
+          clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+          privateKey: privateKey, // Use the private key directly from env
+        }),
+      });
+      console.log('Firebase Admin SDK Initialized Successfully (using individual Vercel env vars).');
+    } else {
+      console.error('Firebase Admin SDK: Missing one or more required credential environment variables for initialization.');
+    }
   } catch (error) {
-    // Log any errors during initialization
     console.error('Firebase Admin SDK Initialization Failed:', error);
   }
 } else {
-  console.log('Firebase Admin SDK already initialized.');
+  // console.log('Firebase Admin SDK already initialized.'); // Optional
 }
 
 // Export the initialized Firebase Admin Authentication service
 let adminAuthInstance;
 try {
-  // Attempt to get the auth instance (will fail if init failed)
   adminAuthInstance = admin.auth();
 } catch (error) {
    console.error("Failed to get admin.auth() instance, likely due to init failure:", error);
-   adminAuthInstance = null; // Assign null if retrieval fails
+   adminAuthInstance = null;
 }
 export const adminAuth = adminAuthInstance;
-
-// You can also export other admin services if needed later
-// export const adminDb = admin.firestore();
