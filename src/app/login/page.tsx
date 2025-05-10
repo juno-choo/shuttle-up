@@ -1,10 +1,7 @@
 // src/app/login/page.tsx
 "use client";
 
-// Keep React import, other hooks like useRouter might be needed elsewhere
-import React from "react";
-// REMOVED useRef import as it's no longer needed for the redirect logic
-// import React, { useRef } from 'react';
+import React, { useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { ShuttlecockIcon } from "@/components/icons/shuttlecock-icon";
@@ -12,7 +9,6 @@ import { signInWithGoogle } from "@/lib/firebase/auth";
 import { useAuth } from "@/context/auth-context";
 import { useToast } from "@/hooks/use-toast";
 
-// GoogleIcon component remains the same
 const GoogleIcon = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -41,23 +37,19 @@ const GoogleIcon = () => (
   </svg>
 );
 
-// Export the LoginPage component function
 export default function LoginPage() {
-  const router = useRouter(); // Keep router if needed for other potential actions
   const { user, loading } = useAuth();
   const { toast } = useToast();
-  // REMOVED useRef for redirect flag
-  // const redirectedRef = useRef(false);
+  // router is not used in this version of LoginPage, but keeping it for consistency
+  // as useAuth depends on it in AuthProvider. If you remove router from AuthProvider's
+  // dependencies later, you can remove it here too if not used.
+  const router = useRouter();
 
-  // handleGoogleSignIn function remains the same
   const handleGoogleSignIn = async () => {
-    console.log("Initiating Google Sign-In Popup...");
-    const { user: signedInUser, error } = await signInWithGoogle(); // Calls popup version
+    const { user: signedInUser, error } = await signInWithGoogle();
     if (signedInUser) {
-      // Show success, but redirect is handled by middleware/state change now
       toast({ title: "Sign-In Successful", description: `Welcome back!` });
     } else if (error) {
-      // Handle popup errors
       if (error.code !== "auth/popup-closed-by-user") {
         toast({
           title: "Login Failed",
@@ -65,12 +57,20 @@ export default function LoginPage() {
           variant: "destructive",
         });
       } else {
-        console.log("Popup closed by user.");
+        // Optionally, console.log("Popup closed by user.");
       }
     }
   };
 
-  // Logic to handle loading state
+  useEffect(() => {
+    // This effect is primarily for the AuthProvider to handle navigation.
+    // This log can be useful to see if LoginPage tries to re-render with a user
+    // before AuthProvider navigates.
+    if (!loading && user) {
+      // console.log("LoginPage: User is present, AuthProvider should handle navigation.");
+    }
+  }, [user, loading]);
+
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -79,21 +79,13 @@ export default function LoginPage() {
     );
   }
 
-  // --- MODIFIED LOGIC ---
-  // If user is detected by context (updated by AuthProvider),
-  // render null here. The middleware will detect the __session cookie
-  // (set by the AuthProvider effect calling the API route)
-  // and handle redirecting the user *away* from the /login route.
   if (user) {
-    console.log(
-      "User found in context on Login page, rendering null while waiting for middleware redirect."
-    );
-    // router.push("/"); // REMOVED client-side push
-    return null; // Render nothing, let middleware handle redirect
+    // User is logged in, AuthProvider's effect (which includes router.push)
+    // should have already triggered or will trigger shortly to navigate away.
+    // Render null to avoid showing login form.
+    return null;
   }
-  // --- END MODIFIED LOGIC ---
 
-  // Render the actual login page content ONLY if NOT loading and NO user is found in context
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-background to-secondary/50 p-4">
       <div className="text-center max-w-md w-full">
