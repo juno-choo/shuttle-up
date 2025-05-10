@@ -23,10 +23,8 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={cn(
-          "min-h-screen bg-background font-sans antialiased",
-          GeistSans.variable
-        )}
+        className={cn('antialiased', GeistSans.variable)}
+        suppressHydrationWarning // Suppresses hydration mismatch warning during development
       >
         {/* Use the ClientProviders component here */}
         <ClientProviders>{children}</ClientProviders>

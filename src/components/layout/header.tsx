@@ -18,8 +18,8 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { User, LogOut, Settings, Loader2 } from 'lucide-react';
 import { ShuttlecockIcon } from '@/components/icons/shuttlecock-icon';
 import { useIsMobile } from '@/hooks/use-mobile';
-import { useAuth } from '@/context/auth-context'; // Import useAuth
-import { signOutUser } from '@/lib/firebase/auth'; // Import signOutUser
+import { useAuth,  } from '@/context/auth-context'; // Import useAuth
+import { signOutUser, auth } from '@/lib/firebase/auth'; // Import signOutUser and auth
 import { useToast } from '@/hooks/use-toast';
 
 export function Header() {
@@ -28,17 +28,39 @@ export function Header() {
   const router = useRouter();
   const { toast } = useToast();
 
-  const handleSignOut = async () => {
-    const { success, error } = await signOutUser();
-    if (success) {
-      // Remove the temporary demo cookie on sign out
-      document.cookie = "firebaseAuth=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
-      toast({ title: "Signed Out", description: "You have been successfully signed out." });
-      router.push('/login'); // Redirect to login page after sign out
-    } else {
-       toast({ title: "Sign Out Failed", description: error?.message || "An unknown error occurred.", variant: "destructive" });
+const handleSignOut = async () => {
+  try {
+    // 1. Clear server-side session
+    const res = await fetch('/api/auth/sessionLogout', {
+      method: 'POST',
+    });
+
+    if (!res.ok) {
+      throw new Error('Failed to clear session cookie.');
     }
-  };
+
+    // 2. Sign out of Firebase client SDK
+    await import('firebase/auth').then(({ signOut }) => signOut(auth)); // or: await signOut(auth);
+
+    // 3. Optionally clear local demo cookie
+    document.cookie = "firebaseAuth=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+
+    // 4. Show toast and redirect
+    toast({
+      title: "Signed Out",
+      description: "You have been successfully signed out.",
+    });
+    router.push('/login');
+  } catch (error: any) {
+    console.error('Logout error:', error);
+    toast({
+      title: "Sign Out Failed",
+      description: error?.message || "An unknown error occurred.",
+      variant: "destructive",
+    });
+  }
+};
+
 
   // Function to get initials from name
   const getInitials = (name: string | null | undefined): string => {

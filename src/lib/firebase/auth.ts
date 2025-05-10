@@ -49,3 +49,5 @@ export async function signOutUser(): Promise<SignOutResult> {
 export function onAuthStateChanged(callback: (user: User | null) => void): () => void {
   return onFirebaseAuthStateChanged(auth, callback);
 }
+
+export {auth};
