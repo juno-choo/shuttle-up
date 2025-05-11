@@ -1,18 +1,14 @@
-@font-face {
-  font-family: 'DM Sans';
-  src: url('/fonts/DMSans-Regular.ttf') format('truetype');
-  font-weight: normal;
-  font-style: normal;
-}
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 body {
-  font-family: 'DM Sans', sans-serif;
+  /* font-family: 'Poppins', sans-serif; */ /* Consider removing if handled by Tailwind base */
+  @apply bg-background text-foreground; /* Keep these */
+  font-feature-settings: "rlig" 1, "calt" 1; /* Keep these */
 }
-
 @layer base {
   :root {
     --background: 0 0% 100%; /* Light background */
@@ -121,6 +117,3 @@ body {
   }
 }
 
-.cursive-font {
-  font-family: 'cursive', cursive;
-}

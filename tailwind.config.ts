@@ -1,4 +1,5 @@
 import type { Config } from "tailwindcss";
+import defaultTheme from 'tailwindcss/defaultTheme'; // Import defaultTheme
 
 export default {
     darkMode: ["class"],
@@ -87,7 +88,14 @@ export default {
   		animation: {
   			'accordion-down': 'accordion-down 0.2s ease-out',
   			'accordion-up': 'accordion-up 0.2s ease-out'
-  		}
+  		},
+		fontFamily: {
+			sans: ['Outfit', ...defaultTheme.fontFamily.sans],
+			// If you still want to use Inter via a CSS variable and utility class:
+			// inter: ['var(--font-inter)', ...defaultTheme.fontFamily.sans],
+			// You could also add GeistSans here if you want a utility for it:
+			// geist: ['var(--font-geist-sans)', ...defaultTheme.fontFamily.sans] // Assuming GeistSans.variable sets --font-geist-sans
+		}
   	}
   },
   plugins: [require("tailwindcss-animate")],
