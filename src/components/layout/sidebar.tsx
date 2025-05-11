@@ -1,9 +1,8 @@
-
 // src/components/layout/sidebar.tsx
-'use client';
+"use client";
 
-import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation'; // Import useRouter
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation"; // Import useRouter
 import {
   SidebarContent,
   SidebarHeader,
@@ -11,21 +10,28 @@ import {
   SidebarMenuItem,
   SidebarMenuButton,
   SidebarFooter,
-} from '@/components/ui/sidebar';
-import { Button } from '@/components/ui/button';
-import { Home, CalendarDays, Trophy, Users, LogOut, Settings, PenLine } from 'lucide-react';
-import { ShuttlecockIcon } from '@/components/icons/shuttlecock-icon';
-import { useAuth } from '@/context/auth-context'; // Import useAuth
-import { signOutUser } from '@/lib/firebase/auth'; // Import signOutUser
-import { useToast } from '@/hooks/use-toast';
-
+} from "@/components/ui/sidebar";
+import { Button } from "@/components/ui/button";
+import {
+  Home,
+  CalendarDays,
+  Trophy,
+  Users,
+  LogOut,
+  Settings,
+  PenLine,
+} from "lucide-react";
+import { ShuttlecockIcon } from "@/components/icons/shuttlecock-icon";
+import { useAuth } from "@/context/auth-context"; // Import useAuth
+import { signOutUser } from "@/lib/firebase/auth"; // Import signOutUser
+import { useToast } from "@/hooks/use-toast";
 
 const menuItems = [
-  { href: '/', label: 'Dashboard', icon: Home },
-  { href: '/schedule', label: 'Schedule', icon: CalendarDays },
-  { href: '/standings', label: 'Standings', icon: Trophy },
-  { href: '/teams', label: 'Teams', icon: Users },
-  { href: '/umpire', label: 'Umpire', icon: PenLine }, // Conditionally show based on role later?
+  { href: "/", label: "Dashboard", icon: Home },
+  { href: "/schedule", label: "Schedule", icon: CalendarDays },
+  { href: "/standings", label: "Standings", icon: Trophy },
+  { href: "/teams", label: "Teams", icon: Users },
+  { href: "/umpire", label: "Umpire", icon: PenLine }, // Conditionally show based on role later?
 ];
 
 export function AppSidebar() {
@@ -38,11 +44,19 @@ export function AppSidebar() {
     const { success, error } = await signOutUser();
     if (success) {
       // Remove the temporary demo cookie on sign out
-      document.cookie = "firebaseAuth=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
-      toast({ title: "Signed Out", description: "You have been successfully signed out." });
-      router.push('/login'); // Redirect to login page after sign out
+      document.cookie =
+        "firebaseAuth=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+      toast({
+        title: "Signed Out",
+        description: "You have been successfully signed out.",
+      });
+      router.push("/login"); // Redirect to login page after sign out
     } else {
-       toast({ title: "Sign Out Failed", description: error?.message || "An unknown error occurred.", variant: "destructive" });
+      toast({
+        title: "Sign Out Failed",
+        description: error?.message || "An unknown error occurred.",
+        variant: "destructive",
+      });
     }
   };
 
@@ -57,11 +71,13 @@ export function AppSidebar() {
   //     return null; // Or a minimal sidebar/message
   // }
 
-
   return (
     <>
       <SidebarHeader className="border-b">
-        <Link href="/" className="flex items-center gap-2 font-semibold text-lg px-2">
+        <Link
+          href="/"
+          className="flex items-center gap-2 font-semibold text-lg px-2"
+        >
           <ShuttlecockIcon className="h-6 w-6 text-primary" />
           <span className="text-primary cursive-font">ShuttleUp</span>
         </Link>
@@ -72,10 +88,13 @@ export function AppSidebar() {
             <SidebarMenuItem key={item.href}>
               <SidebarMenuButton
                 asChild
-                variant="ghost"
+                variant="default"
                 className="w-full justify-start"
                 // Match base path, e.g., /teams should match /teams/123
-                isActive={pathname === item.href || (item.href !== '/' && pathname.startsWith(item.href))}
+                isActive={
+                  pathname === item.href ||
+                  (item.href !== "/" && pathname.startsWith(item.href))
+                }
                 tooltip={item.label}
               >
                 <Link href={item.href}>
@@ -89,34 +108,33 @@ export function AppSidebar() {
       </SidebarContent>
       <SidebarFooter className="mt-auto border-t p-2">
         <SidebarMenu>
-         <SidebarMenuItem>
-              <SidebarMenuButton
-                asChild
-                variant="ghost"
-                className="w-full justify-start"
-                isActive={pathname === '/settings'}
-                tooltip="Settings"
-              >
-                <Link href="/settings">
-                  <Settings className="h-5 w-5" />
-                  <span>Settings</span>
-                </Link>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-           <SidebarMenuItem>
-              <SidebarMenuButton
-                variant="ghost"
-                className="w-full justify-start text-destructive hover:text-destructive-foreground hover:bg-destructive"
-                tooltip="Logout"
-                onClick={handleSignOut} // Call sign out function
-              >
-                <LogOut className="h-5 w-5" />
-                <span>Log out</span>
-              </SidebarMenuButton>
+          <SidebarMenuItem>
+            <SidebarMenuButton
+              asChild
+              variant="default"
+              className="w-full justify-start"
+              isActive={pathname === "/settings"}
+              tooltip="Settings"
+            >
+              <Link href="/settings">
+                <Settings className="h-5 w-5" />
+                <span>Settings</span>
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+          <SidebarMenuItem>
+            <SidebarMenuButton
+              variant="default"
+              className="w-full justify-start text-destructive hover:text-destructive-foreground hover:bg-destructive"
+              tooltip="Logout"
+              onClick={handleSignOut} // Call sign out function
+            >
+              <LogOut className="h-5 w-5" />
+              <span>Log out</span>
+            </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarFooter>
     </>
   );
 }
-

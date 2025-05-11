@@ -10,19 +10,11 @@ import {
 import { Button } from "@/components/ui/button";
 import { CalendarDays, Trophy, Users, ArrowRight } from "lucide-react";
 import Link from "next/link";
-
-// export default function TemporaryHomePage() {
-//   console.log("Rendering Temporary Home Page!"); // Add a log
-//   return (
-//     <div>
-//       <h1>Home Page Loaded Successfully</h1>
-//     </div>
-//   );
-// }
+import { GeistSans } from "geist/font/sans";
 
 export default function DashboardPage() {
   return (
-    <div className="container mx-auto py-8">
+    <div className={`container mx-auto py-8 ${GeistSans.variable}`}>
       <h1 className="text-3xl font-bold mb-6">Welcome to ShuttleUp!</h1>
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
