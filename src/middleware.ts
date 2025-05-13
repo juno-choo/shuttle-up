@@ -29,6 +29,6 @@ function isPublicPath(pathname: string): boolean {
 
 export const config = {
   matcher: [
-    '/((?!api|_next/static|_next/image|favicon.ico|fonts|images).*)',
+    '/((?!api|_next/static|_next/image|favico.ico|fonts|images).*)',
   ],
 };
