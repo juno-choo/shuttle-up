@@ -6,10 +6,6 @@ import { cn } from "@/lib/utils";
 import { Toaster } from "@/components/ui/toaster";
 import { ClientProviders } from "@/components/providers/client-providers";
 
-// If you're using the Inter font, apply it to the body or html tag.
-// For example, if you initialized it like: const inter = Inter({ subsets: ['latin'] });
-// Then you might use inter.className on the body or html tag.
-
 export const metadata: Metadata = {
   title: "ShuttleUp",
   description: "Your badminton league manager",
