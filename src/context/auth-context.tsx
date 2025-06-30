@@ -63,7 +63,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
               );
             } else {
               // Successfully set cookie, now navigate
-              router.push("/");
+              router.push("/app"); // Changed from "/" to "/app"
             }
           } catch (error) {
             console.error("Error during sessionLogin fetch:", error);
