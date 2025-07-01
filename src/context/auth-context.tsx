@@ -114,13 +114,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
               );
             } else {
               // Successfully set cookie, now navigate
-              // Only push if not already on "/" or if navigation is desired on every login
-              if (router && typeof router.push === "function") {
-                // Check if router is available
-                // router.push("/"); // You might want to control navigation more explicitly
-                // e.g., only if they are on a login page, or redirect based on other state.
-                console.log("Session cookie set. User logged in.");
-              }
+              router.push("/app"); // Changed from "/" to "/app"
             }
           } catch (error) {
             console.error("Error during sessionLogin fetch:", error);
