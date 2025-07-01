@@ -21,6 +21,7 @@ const auth = getAuth(app);
 const db = getFirestore(app); 
 const storage = getStorage(app);
 
+
 // --- ADD THIS ---
 // Explicitly set browser local persistence
 setPersistence(auth, browserLocalPersistence)
@@ -37,4 +38,4 @@ setPersistence(auth, browserLocalPersistence)
 
 
 
-export { app, auth , db, storage}; 
+export { app, auth , db, storage }; // Export auth and db if needed elsewhere
