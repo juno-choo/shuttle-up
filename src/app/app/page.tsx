@@ -1,4 +1,4 @@
-// src/app/(authenticated)/page.tsx
+// src/app/app/page.tsx
 
 import {
   Card,
@@ -31,7 +31,7 @@ export default function DashboardPage() {
               Matches scheduled this week
             </p>
             <Button asChild variant="link" className="px-0 pt-4">
-              <Link href="/schedule">
+              <Link href="/app/schedule">
                 View Schedule <ArrowRight className="ml-1 h-4 w-4" />
               </Link>
             </Button>
@@ -51,7 +51,7 @@ export default function DashboardPage() {
               Your current rank in Group A
             </p>
             <Button asChild variant="link" className="px-0 pt-4">
-              <Link href="/standings">
+              <Link href="/app/standings">
                 View Standings <ArrowRight className="ml-1 h-4 w-4" />
               </Link>
             </Button>
@@ -69,7 +69,7 @@ export default function DashboardPage() {
               Teams competing in the league
             </p>
             <Button asChild variant="link" className="px-0 pt-4">
-              <Link href="/teams">
+              <Link href="/app/teams">
                 View Teams <ArrowRight className="ml-1 h-4 w-4" />
               </Link>
             </Button>

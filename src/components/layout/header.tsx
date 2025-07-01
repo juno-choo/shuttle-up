@@ -127,7 +127,7 @@ export function Header() {
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild>
               <Link
-                href="/profile"
+                href="/app/profile"
                 className="flex items-center gap-2 cursor-pointer"
               >
                 <User className="h-4 w-4" />
@@ -136,7 +136,7 @@ export function Header() {
             </DropdownMenuItem>
             <DropdownMenuItem asChild>
               <Link
-                href="/settings"
+                href="/app/settings"
                 className="flex items-center gap-2 cursor-pointer"
               >
                 <Settings className="h-4 w-4" />

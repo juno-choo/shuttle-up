@@ -1,4 +1,4 @@
-// src/app/(authenticated)/layout.tsx
+// src/app/app/layout.tsx
 "use client";
 
 import type { ReactNode } from "react";

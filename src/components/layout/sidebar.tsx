@@ -30,10 +30,10 @@ import { useToast } from "@/hooks/use-toast";
 
 const menuItems = [
   { href: "/", label: "Dashboard", icon: Home },
-  { href: "/schedule", label: "Schedule", icon: CalendarDays },
-  { href: "/standings", label: "Standings", icon: Trophy },
-  { href: "/teams", label: "Teams", icon: Users },
-  { href: "/umpire", label: "Umpire", icon: PenLine },
+  { href: "/app/schedule", label: "Schedule", icon: CalendarDays },
+  { href: "/app/standings", label: "Standings", icon: Trophy },
+  { href: "/app/teams", label: "Teams", icon: Users },
+  { href: "/app/umpire", label: "Umpire", icon: PenLine },
 ];
 
 export function AppSidebar() {
@@ -147,7 +147,7 @@ export function AppSidebar() {
               isActive={pathname === "/settings"}
               tooltip="Settings"
             >
-              <Link href="/settings" onClick={handleMenuItemClick}>
+              <Link href="/app/settings" onClick={handleMenuItemClick}>
                 <Settings className="h-5 w-5" />
                 <span>Settings</span>
               </Link>
