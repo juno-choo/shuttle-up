@@ -10,13 +10,16 @@ import {
     setPersistence, // <--- Import setPersistence
     browserLocalPersistence // <--- Import persistence type
 } from 'firebase/auth';
-// import { getFirestore } from 'firebase/firestore'; // Uncomment if you need Firestore
+import { getFirestore } from 'firebase/firestore';
 import { firebaseConfig } from './config';
+import { getStorage } from 'firebase/storage';
 
 // Initialize Firebase
 // Check if Firebase has already been initialized
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
 const auth = getAuth(app);
+const db = getFirestore(app);
+const storage = getStorage(app);
 
 // --- ADD THIS ---
 // Explicitly set browser local persistence
@@ -32,6 +35,6 @@ setPersistence(auth, browserLocalPersistence)
 // --- END ADD ---
 
 
-// const db = getFirestore(app); // Uncomment if you need Firestore
 
-export { app, auth /*, db*/ }; // Export auth and db if needed elsewhere
+
+export { app, auth , db, storage};
