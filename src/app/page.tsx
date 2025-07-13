@@ -58,7 +58,7 @@ export default function UnauthenticatedLandingPage() {
             className="text-lg text-muted-foreground"
             style={{ opacity: pOpacity }} // Apply the fade-out animation
           >
-            The best platform to manage your badminton league.
+            Your go-to badminton matchmaking platform.
           </motion.p>
         </div>
       </div>
