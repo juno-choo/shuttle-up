@@ -1,7 +1,7 @@
 // src/app/login/page.tsx
 "use client";
 
-import React, { useEffect, useRef } from "react";
+import React, { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { ShuttlecockIcon } from "@/components/icons/shuttlecock-icon";
@@ -40,15 +40,14 @@ const GoogleIcon = () => (
 export default function LoginPage() {
   const { user, loading } = useAuth();
   const { toast } = useToast();
-  // router is not used in this version of LoginPage, but keeping it for consistency
-  // as useAuth depends on it in AuthProvider. If you remove router from AuthProvider's
-  // dependencies later, you can remove it here too if not used.
   const router = useRouter();
 
   const handleGoogleSignIn = async () => {
     const { user: signedInUser, error } = await signInWithGoogle();
     if (signedInUser) {
       toast({ title: "Sign-In Successful", description: `Welcome back!` });
+      // Redirect after successful login
+      router.push("/app");
     } else if (error) {
       if (error.code !== "auth/popup-closed-by-user") {
         toast({
@@ -56,34 +55,24 @@ export default function LoginPage() {
           description: error.message,
           variant: "destructive",
         });
-      } else {
-        // Optionally, console.log("Popup closed by user.");
       }
     }
   };
 
   useEffect(() => {
-    // This effect is primarily for the AuthProvider to handle navigation.
-    // This log can be useful to see if LoginPage tries to re-render with a user
-    // before AuthProvider navigates.
+    // This effect handles the case where a user is already logged in when visiting the page
     if (!loading && user) {
-      // console.log("LoginPage: User is present, AuthProvider should handle navigation.");
+      router.push("/app");
     }
-  }, [user, loading]);
+  }, [user, loading, router]);
 
-  if (loading) {
+  // Show a loading indicator while auth state is being determined or if a user is being redirected
+  if (loading || user) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         Loading...
       </div>
     );
-  }
-
-  if (user) {
-    // User is logged in, AuthProvider's effect (which includes router.push)
-    // should have already triggered or will trigger shortly to navigate away.
-    // Render null to avoid showing login form.
-    return null;
   }
 
   return (
