@@ -58,23 +58,78 @@ export default function UnauthenticatedLandingPage() {
             className="text-lg text-muted-foreground"
             style={{ opacity: pOpacity }} // Apply the fade-out animation
           >
-            Your go-to badminton matchmaking platform.
+            Your go-to badminton and pickleball matchmaking platform.
           </motion.p>
         </div>
       </div>
 
       {/* Features Section */}
       <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        {/* Feature 1: League Standings */}
+        {/* Feature 1 */}
+        <motion.div
+          className="flex flex-col md:flex-row-reverse items-center justify-between mb-40"
+          initial={{ opacity: 0, x: 100 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true, amount: 0.3 }}
+          transition={{ duration: 0.6 }}
+        >
+          <div className="md:w-1/2 mb-8 md:mb-0 md:pl-12">
+            <h2 className="text-4xl font-bold mb-4">
+              Simple Match-Up Notification System
+            </h2>
+            <p className="text-lg text-muted-foreground">
+              Challenge your mate in seconds and start playing IRL!
+            </p>
+          </div>
+          <div className="md:w-1/2">
+            <Image
+              // *************NEED MODIFIED PIC TO EMAIL NOTIFICATION***************
+              src={teamPage}
+              alt="Team Performance Page"
+              // *************MODIFY PIC TO EMAIL NOTIFICATION***************
+              className="rounded-lg shadow-xl"
+            />
+          </div>
+        </motion.div>
+
+        {/* Feature 2: Team Performance */}
         <motion.div
           className="flex flex-col md:flex-row items-center justify-between mb-40"
-          initial={{ opacity: 0, x: -100 }}
+          initial={{ opacity: 0, x: 100 }}
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true, amount: 0.3 }}
           transition={{ duration: 0.6 }}
         >
           <div className="md:w-1/2 mb-8 md:mb-0 md:pr-12">
-            <h2 className="text-4xl font-bold mb-4">Track Your Progress</h2>
+            <h2 className="text-4xl font-bold mb-4">
+              Analyze Your Performance
+            </h2>
+            <p className="text-lg text-muted-foreground">
+              Dive deep into your team's performance with detailed stats and
+              track your win rate like a pro.
+            </p>
+          </div>
+          <div className="md:w-1/2">
+            <Image
+              src={leagueStandings}
+              alt="My Standings"
+              className="rounded-lg shadow-xl"
+            />
+          </div>
+        </motion.div>
+
+        {/* Feature 3: League Standings */}
+        <motion.div
+          className="flex flex-col md:flex-row-reverse items-center justify-between mb-40"
+          initial={{ opacity: 0, x: -100 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true, amount: 0.3 }}
+          transition={{ duration: 0.6 }}
+        >
+          <div className="md:w-1/2 mb-8 md:mb-0 md:pl-12">
+            <h2 className="text-4xl font-bold mb-4">
+              Join a League (Coming Soon)
+            </h2>
             <p className="text-lg text-muted-foreground">
               Stay updated with real-time league standings. See how your team
               stacks up against the competition with a clear and concise table.
@@ -90,33 +145,7 @@ export default function UnauthenticatedLandingPage() {
           </div>
         </motion.div>
 
-        {/* Feature 2: Team Performance */}
-        <motion.div
-          className="flex flex-col md:flex-row-reverse items-center justify-between mb-40"
-          initial={{ opacity: 0, x: 100 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true, amount: 0.3 }}
-          transition={{ duration: 0.6 }}
-        >
-          <div className="md:w-1/2 mb-8 md:mb-0 md:pl-12">
-            <h2 className="text-4xl font-bold mb-4">
-              Analyze Your Performance
-            </h2>
-            <p className="text-lg text-muted-foreground">
-              Dive deep into your team's performance with detailed stats, track
-              your win rate, and manage your team members all in one place.
-            </p>
-          </div>
-          <div className="md:w-1/2">
-            <Image
-              src={teamPage}
-              alt="Team Performance Page"
-              className="rounded-lg shadow-xl"
-            />
-          </div>
-        </motion.div>
-
-        {/* Feature 3: Match Schedules */}
+        {/* Feature 4: Match Schedules */}
         <motion.div
           className="flex flex-col md:flex-row items-center justify-between"
           initial={{ opacity: 0, x: -100 }}
@@ -125,7 +154,9 @@ export default function UnauthenticatedLandingPage() {
           transition={{ duration: 0.6 }}
         >
           <div className="md:w-1/2 mb-8 md:mb-0 md:pr-12">
-            <h2 className="text-4xl font-bold mb-4">Never Miss a Match</h2>
+            <h2 className="text-4xl font-bold mb-4">
+              Never Miss a Match (Coming Soon)
+            </h2>
             <p className="text-lg text-muted-foreground">
               Keep track of all upcoming and past matches with an easy-to-read
               schedule. See dates, times, and court information at a glance.
