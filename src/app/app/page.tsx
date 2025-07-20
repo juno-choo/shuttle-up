@@ -15,8 +15,12 @@ import { GeistSans } from "geist/font/sans";
 export default function DashboardPage() {
   return (
     <div className="container mx-auto py-8">
-      <h1 className="text-3xl font-bold mb-6">Welcome to ShuttleUp!</h1>
-
+      <div className="flex items-center justify-between mb-6">
+        <h1 className="text-3xl font-bold">Welcome to ShuttleUp!</h1>
+        <Button asChild>
+          <Link href="/app/play_now/matchmaking">Play Now</Link>
+        </Button>
+      </div>
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">

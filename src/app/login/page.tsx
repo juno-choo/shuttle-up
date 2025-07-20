@@ -83,7 +83,7 @@ export default function LoginPage() {
           ShuttleUp
         </h1>
         <p className="text-lg text-muted-foreground mb-8">
-          A badminton league platform
+          Your go-to badminton and pickleball matchmaking platform.
         </p>
         <Button
           onClick={handleGoogleSignIn}
