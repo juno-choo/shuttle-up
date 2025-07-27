@@ -67,8 +67,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
                 `No profile document found for UID: ${firebaseUser.uid}. Creating one...`
               );
 
+              const displayName = firebaseUser.displayName || "New User";
+
               await setDoc(userDocRef, {
-                displayName: firebaseUser.displayName || "New User",
+                displayName: displayName,
+                displayName_lowercase: displayName.toLowerCase(), // Added for search
                 email: firebaseUser.email,
                 team: "Your Team",
                 skillLevel: "Beginner",

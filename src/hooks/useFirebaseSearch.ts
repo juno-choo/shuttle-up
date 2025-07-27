@@ -1,19 +1,61 @@
-import { useCallback } from 'react';
-import { PlayerCard } from '../types/PlayerCard';
+// hooks/useFirebaseSearch.ts
+import { useState, useEffect, useMemo } from 'react';
+import { collection, query, getDocs } from "firebase/firestore";
+import { db } from "../lib/firebase/client"; 
+import { User } from '../types/PlayerCard'; 
+import { useAuth } from '../context/auth-context';
 
 const useFirebaseSearch = () => {
-    const searchUsers = useCallback(async (sport: string, type: 'teammate' | 'opponent'): Promise<PlayerCard[]> => {
-        // Simulate Firebase search logic
-        const mockResults: PlayerCard[] = [
-            { id: '1', name: 'Alice', profilePic: '/images/alice.jpg', totalWins: 10 },
-            { id: '2', name: 'Bob', profilePic: '/images/bob.jpg', totalWins: 15 },
-        ];
+  const { user: currentUser } = useAuth();
+  // 1. State to hold all users fetched from Firestore
+  const [allUsers, setAllUsers] = useState<User[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-        // Example filter logic based on sport and type
-        return mockResults.filter((user) => user.totalWins > 5); // Replace with actual Firebase query
-    }, []);
+  // 2. Fetch all users once when the hook is first used
+  useEffect(() => {
+    const fetchAllUsers = async () => {
+      const usersRef = collection(db, "users");
+      const q = query(usersRef);
+      try {
+        const querySnapshot = await getDocs(q);
+        const users = querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        })) as User[];
+        setAllUsers(users);
+      } catch (error) {
+        console.error("Error fetching all users:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-    return { searchUsers };
+    fetchAllUsers();
+  }, []);
+
+  // 3. Filter the cached list of users based on the search query
+  const searchUsersByName = (nameQuery: string): User[] => {
+    if (!nameQuery.trim() || isLoading) {
+      return [];
+    }
+  
+    const lowerCaseQuery = nameQuery.toLowerCase();
+  
+    // Filter the list we have in memory
+    const results = allUsers.filter(user => 
+      // Use .includes() for a "contains" search on the lowercase name
+      user.displayName_lowercase?.includes(lowerCaseQuery)
+    );
+  
+    // Also filter out the currently logged-in user
+    if (currentUser) {
+      return results.filter(user => user.id !== currentUser.uid);
+    }
+  
+    return results;
+  };
+
+  return { searchUsersByName, isLoading };
 };
 
 export default useFirebaseSearch;
