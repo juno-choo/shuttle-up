@@ -32,59 +32,61 @@ const currentUserTeamName = "Your Team";
 
 export default function StandingsPage() {
   return (
-    <div className="container mx-auto py-8">
-      <h1 className="text-3xl font-bold mb-6">League Standings</h1>
+    <div className="container mx-auto py-8 relative">
+      <div className="pointer-events-none">
+        <h1 className="text-3xl font-bold mb-6">League Standings</h1>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Group A Standings</CardTitle>
-          <CardDescription>
-            Current rankings based on match results.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead className="w-[50px]">Rank</TableHead>
-                <TableHead>Team</TableHead>
-                <TableHead className="text-right">Played</TableHead>
-                <TableHead className="text-right">Won</TableHead>
-                <TableHead className="text-right">Lost</TableHead>
-                <TableHead className="text-right">Points</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {standings.map((team) => (
-                <TableRow
-                  key={team.rank}
-                  className={
-                    team.team === currentUserTeamName ? "bg-accent/10" : ""
-                  }
-                >
-                  <TableCell className="font-medium">{team.rank}</TableCell>
-                  <TableCell>
-                    <div className="flex items-center gap-2">
-                      {team.team}
-                      {team.team === currentUserTeamName && (
-                        <Badge variant="default" className="ml-2">
-                          You
-                        </Badge>
-                      )}
-                    </div>
-                  </TableCell>
-                  <TableCell className="text-right">{team.played}</TableCell>
-                  <TableCell className="text-right">{team.won}</TableCell>
-                  <TableCell className="text-right">{team.lost}</TableCell>
-                  <TableCell className="text-right font-semibold">
-                    {team.points}
-                  </TableCell>
+        <Card>
+          <CardHeader>
+            <CardTitle>Group A Standings</CardTitle>
+            <CardDescription>
+              Current rankings based on match results.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="w-[50px]">Rank</TableHead>
+                  <TableHead>Team</TableHead>
+                  <TableHead className="text-right">Played</TableHead>
+                  <TableHead className="text-right">Won</TableHead>
+                  <TableHead className="text-right">Lost</TableHead>
+                  <TableHead className="text-right">Points</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
+              </TableHeader>
+              <TableBody>
+                {standings.map((team) => (
+                  <TableRow
+                    key={team.rank}
+                    className={
+                      team.team === currentUserTeamName ? "bg-accent/10" : ""
+                    }
+                  >
+                    <TableCell className="font-medium">{team.rank}</TableCell>
+                    <TableCell>
+                      <div className="flex items-center gap-2">
+                        {team.team}
+                        {team.team === currentUserTeamName && (
+                          <Badge variant="default" className="ml-2">
+                            You
+                          </Badge>
+                        )}
+                      </div>
+                    </TableCell>
+                    <TableCell className="text-right">{team.played}</TableCell>
+                    <TableCell className="text-right">{team.won}</TableCell>
+                    <TableCell className="text-right">{team.lost}</TableCell>
+                    <TableCell className="text-right font-semibold">
+                      {team.points}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 }
