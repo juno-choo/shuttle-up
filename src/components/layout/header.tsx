@@ -92,7 +92,7 @@ export function Header() {
           {/* {isSidebarActuallyOpen ? <PanelRightOpen className="h-5 w-5" /> : <PanelLeftOpen className="h-5 w-5" />} */}
         </SidebarTrigger>
         <Link
-          href="/"
+          href="/app"
           className="flex items-center gap-2 font-semibold text-lg "
         >
           <ShuttlecockIcon className="h-6 w-6 text-primary" />

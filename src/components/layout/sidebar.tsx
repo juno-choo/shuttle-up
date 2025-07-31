@@ -29,7 +29,7 @@ import { signOutUser } from "@/lib/firebase/auth";
 import { useToast } from "@/hooks/use-toast";
 
 const menuItems = [
-  { href: "/", label: "Dashboard", icon: Home },
+  { href: "/app", label: "Dashboard", icon: Home },
   { href: "/app/schedule", label: "Schedule", icon: CalendarDays },
   { href: "/app/standings", label: "Standings", icon: Trophy },
   { href: "/app/teams", label: "Teams", icon: Users },
@@ -92,7 +92,7 @@ export function AppSidebar() {
       <SidebarHeader className="border-b">
         <div className="flex items-center justify-between w-full h-14 px-2">
           <Link
-            href="/"
+            href="/app"
             className="flex items-center gap-2 font-semibold text-lg"
             onClick={handleMenuItemClick} // This will now only close on mobile if open
           >
