@@ -47,7 +47,6 @@ export default function LoginPage() {
     if (signedInUser) {
       toast({ title: "Sign-In Successful", description: `Welcome back!` });
       // Redirect after successful login
-      router.push("/app");
     } else if (error) {
       if (error.code !== "auth/popup-closed-by-user") {
         toast({
@@ -67,12 +66,15 @@ export default function LoginPage() {
   }, [user, loading, router]);
 
   // Show a loading indicator while auth state is being determined or if a user is being redirected
-  if (loading || user) {
+  if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         Loading...
       </div>
     );
+  }
+  if (user) {
+    return null;
   }
 
   return (

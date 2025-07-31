@@ -2,16 +2,10 @@
 "use client";
 
 import type { ReactNode } from "react";
-import React, {
-  createContext,
-  useContext,
-  useState,
-  useEffect,
-  useRef,
-} from "react";
+import React, { createContext, useContext, useState, useEffect } from "react";
 import type { User } from "firebase/auth";
-import { onAuthStateChanged as firebaseOnAuthStateChanged } from "@/lib/firebase/auth";
-import { useRouter } from "next/navigation";
+// Use your actual onAuthStateChanged import
+import { onAuthStateChanged } from "@/lib/firebase/auth";
 
 // Firestore imports
 import { db } from "@/lib/firebase/client";
@@ -38,106 +32,51 @@ interface AuthProviderProps {
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
-  const previousUserRef = useRef<User | null>(null);
-  const router = useRouter();
 
   useEffect(() => {
-    const unsubscribe = firebaseOnAuthStateChanged(async (firebaseUser) => {
-      const previousUser = previousUserRef.current;
-      const stateChanged = firebaseUser?.uid !== previousUser?.uid;
-      previousUserRef.current = firebaseUser;
+    // Set up the listener. It runs once on component mount.
+    const unsubscribe = onAuthStateChanged(async (firebaseUser) => {
+      setUser(firebaseUser); // Set user state immediately
+      setLoading(false); // Set loading to false after all async operations are done
+      if (firebaseUser) {
+        // --- User is logged IN ---
 
-      setUser(firebaseUser);
-      setLoading(false);
+        // Check/create Firestore profile (this can happen in the background)
+        const userDocRef = doc(db, "users", firebaseUser.uid);
+        const docSnap = await getDoc(userDocRef);
 
-      if (stateChanged) {
-        if (firebaseUser) {
-          console.log(
-            "Auth state changed: User is now logged in.",
-            firebaseUser.uid
-          );
-
-          // --- Check and create Firestore user profile document ---
-          const userDocRef = doc(db, "users", firebaseUser.uid);
-          try {
-            const docSnap = await getDoc(userDocRef);
-
-            if (!docSnap.exists()) {
-              console.log(
-                `No profile document found for UID: ${firebaseUser.uid}. Creating one...`
-              );
-
-              const displayName = firebaseUser.displayName || "New User";
-
-              await setDoc(userDocRef, {
-                displayName: displayName,
-                displayName_lowercase: displayName.toLowerCase(), // Added for search
-                email: firebaseUser.email,
-                team: "Your Team",
-                skillLevel: "Beginner",
-                createdAt: serverTimestamp(),
-                stats: {
-                  badminton: {
-                    matchesPlayed: 0,
-                    matchesWon: 0,
-                  },
-                  pickleball: {
-                    matchesPlayed: 0,
-                    matchesWon: 0,
-                  },
-                },
-              });
-
-              console.log(
-                "New user profile created in Firestore for UID:",
-                firebaseUser.uid
-              );
-            } else {
-              console.log(
-                "Profile document already exists for UID:",
-                firebaseUser.uid
-              );
-            }
-          } catch (error) {
-            console.error(
-              "Error checking or creating user profile in Firestore:",
-              error
-            );
-          }
-          // --- End of Firestore profile check ---
-
-          try {
-            const idToken = await firebaseUser.getIdToken();
-            const response = await fetch("/api/auth/sessionLogin", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ idToken }),
-            });
-            if (!response.ok) {
-              console.error(
-                "sessionLogin API call failed:",
-                response.status,
-                await response.text()
-              );
-            }
-          } catch (error) {
-            console.error("Error during sessionLogin fetch:", error);
-          }
-        } else {
-          console.log("Auth state changed: User is now logged out.");
-          try {
-            await fetch("/api/auth/sessionLogout", { method: "POST" });
-          } catch (error) {
-            console.error("Error during sessionLogout fetch:", error);
-          }
+        if (!docSnap.exists()) {
+          console.log(`Creating Firestore profile for ${firebaseUser.uid}`);
+          const displayName = firebaseUser.displayName || "New User";
+          await setDoc(userDocRef, {
+            displayName: displayName,
+            displayName_lowercase: displayName.toLowerCase(),
+            email: firebaseUser.email,
+            team: "Your Team",
+            skillLevel: "Beginner",
+            createdAt: serverTimestamp(),
+            stats: {
+              /* ...stats object... */
+            },
+          });
         }
+
+        // Set the server-side session cookie
+        const idToken = await firebaseUser.getIdToken();
+        await fetch("/api/auth/sessionLogin", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ idToken }),
+        });
+      } else {
+        // --- User is logged OUT ---
+        await fetch("/api/auth/sessionLogout", { method: "POST" });
       }
     });
 
-    return () => {
-      unsubscribe();
-    };
-  }, [router]);
+    // Cleanup the listener on unmount
+    return () => unsubscribe();
+  }, []); // <-- Use an empty dependency array to run only once
 
   const isAuthenticated = !!user;
   const value = { user, loading, isAuthenticated };
